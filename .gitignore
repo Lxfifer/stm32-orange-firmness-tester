@@ -1,0 +1,46 @@
+# ---------------------------------------------------------------------------
+# Keil MDK-ARM build output
+# ---------------------------------------------------------------------------
+firmware/MDK-ARM/F103/
+firmware/MDK-ARM/Objects/
+firmware/MDK-ARM/Listings/
+*.o
+*.crf
+*.d
+*.axf
+*.hex
+*.htm
+*.build_log.htm
+*.lnp
+*.map
+*.dep
+*.lst
+*.bak
+*.Bak
+*.sct
+
+# uVision user/GUI settings (the project files .uvprojx / .uvoptx are tracked)
+*.uvguix.*
+*.uvguix
+JLinkLog.txt
+JLinkSettings.ini
+EventRecorderStub.scvd.lock
+
+# ---------------------------------------------------------------------------
+# Python host software
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+
+# ---------------------------------------------------------------------------
+# Editors and OS
+# ---------------------------------------------------------------------------
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini

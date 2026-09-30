@@ -1,0 +1,64 @@
+ORANGE-PRESS TESTER - QUICK NOTES
+================================
+Full documentation is in ../docs/. This file is the short version that sits
+next to the Keil project.
+
+1. WIRING
+---------
+Stepper driver HPD322 (control signals):
+    board PA2 ---- driver EN+    (enable, active LOW)
+    board PA3 ---- driver DIR+   (direction: low = rod up, high = rod down)
+    board PA4 ---- driver PUL+   (step pulses)
+    board GND ---- driver EN- / DIR- / PUL- (signal ground)
+
+Load cell front end, HX711:
+    board PC13 --- HX711 DT      (data)
+    board PC14 --- HX711 SCK     (clock)
+    HX711 VCC  -- 3.3 V, GND common
+    IMPORTANT: PC13/PC14 live in the backup domain, so VBAT must be tied to
+    3.3 V (or to a battery). With VBAT floating these pins do nothing and the
+    weight reading stays 0 forever.
+
+Console (SSCOM, 115200 8N1, single characters are enough):
+    board PA9  ---- USB-TTL RX
+    board PA10 ---- USB-TTL TX
+    board GND  ---- USB-TTL GND
+
+2. MECHANICS AND SCALING
+------------------------
+    Motor        : 42 mm stepper, 200 steps/rev, HPD322 at 16 microsteps
+                   -> 3200 steps/rev
+    Transmission : rack and pinion; one motor revolution moves 39.808 mm
+    Measured     : 80.386 steps/mm
+    Installed stroke: about 145 mm
+
+3. USAGE
+--------
+Make sure the rod rests on the bottom stop, then send one character:
+
+    a            automatic run (see docs/02-operation.md)
+    b            manual run
+    d            cut the motor and go back to idle
+    t            idle self-test: up 20 mm, then down 20 mm
+    v            print the internal state (use it when a run seems stuck)
+    c=<mm>       set the press depth, e.g. c=2.5   (0.1 .. 20 mm, default 3)
+
+The firmware answers with ASCII lines, for example:
+
+    W 125.38 g          live weight, 10 Hz, only while a run is active
+    A 125.38 g (5)      weight sampled over 0.5 s before the press
+    press 3.00 mm       pressing has started (this is where the PC plots from)
+    press done          rod has reached the press depth
+    MAX 268.42 g        peak force captured over 1 s
+    done                run finished
+
+4. BUILD
+--------
+Open MDK-ARM\F103.uvprojx with Keil uVision5 (ARM Compiler 5) and build the
+"F103" target. The reference build (ARM Compiler 5, MicroLib, -O3) gives
+    Code = 9732 B, RO-data = 360 B, RW-data = 84 B, ZI-data = 2236 B
+which is 10176 bytes of flash out of 64 KB. The three
+"#1-D: last line of file ends without a newline" warnings of the original tree
+(Inc\usart.h, Src\usart.c) have been fixed.
+
+The corrector/hex output lands in MDK-ARM\F103\ and is not tracked by git.
